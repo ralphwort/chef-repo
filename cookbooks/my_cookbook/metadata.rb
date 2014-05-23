@@ -8,6 +8,6 @@ version          '0.1.0'
 
 depends 'build-essential'
 depends 'apache2', '>= 1.0.4'
-depends 'chef_client', '>= 1.0.0'
+depends 'chef_client', '>= 0.0.0'
 depends 'apt', '>= 1.0.0'
 depends 'ntp', '>= 1.0.0'
