@@ -9,3 +9,5 @@
 include_recipe "chef-client"
 include_recipe "apt"
 include_recipe "ntp"
+include_recipe "build-essentials"
+include_recipe "apache2"
