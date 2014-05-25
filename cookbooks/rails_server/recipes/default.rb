@@ -8,21 +8,21 @@
 #
 
 include_recipe "curl"
-include_recipe "rvm"
-include_recipe "passenger_apache2"
-include_recipe "unicorn"
+include_recipe "rails_application"
+#include_recipe "rvm"
+#include_recipe "passenger_apache2"
+#include_recipe "unicorn"
 
-execute "install rails" do
-  command "rvm install ruby"
-  command "rvm use ruby --default"
-  command "rvm rubygems current"
-  command "gem install rails"
-  user "root"
-end
+#execute "install rails" do
+#  command "rvm install ruby-2.1.25"
+#  command "rvm use ruby --default"
+#  command "rvm rubygems current"
+#  command "gem install rails"
+#  user "ralph"
+#end
 
 execute "touch rw" do
   command "touch /tmp/rw.tmp"
   user "root"
 end
 
-include_recipe "passenger"
