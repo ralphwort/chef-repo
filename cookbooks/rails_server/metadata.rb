@@ -6,8 +6,8 @@ description      'Installs/Configures rails_server'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 
-depends "curl"
-depends "application"
-depends "rails_application"
-depends "passenger_apache2"
-depends "unicorn"
+#depends "curl"
+#depends "application"
+depends "application_ruby"
+#depends "passenger_apache2"
+#depends "unicorn"

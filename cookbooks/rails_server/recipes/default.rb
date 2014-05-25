@@ -7,12 +7,12 @@
 # All rights reserved - Do Not Redistribute
 #
 
-include_recipe "curl"
-include_recipe "application"
-include_recipe "rails_application"
+#include_recipe "curl"
+#include_recipe "application"
+include_recipe "application_ruby"
 #include_recipe "rvm"
-include_recipe "passenger_apache2"
-include_recipe "unicorn"
+#include_recipe "passenger_apache2"
+#include_recipe "unicorn"
 
 #execute "install rails" do
 #  command "rvm install ruby-2.1.25"
