@@ -8,4 +8,3 @@ version          '0.1.0'
 
 depends "ruby_build"
 depends "nginx"
-depends "passenger", "4.0.42"

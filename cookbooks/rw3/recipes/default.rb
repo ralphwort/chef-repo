@@ -26,6 +26,11 @@ execute "install rails" do
   user "root"
 end
 
+execute "install pasenger" do
+  command "gem install passenger"
+  user "root"
+end
+
 package 'nginx' do
   action :install
 end
@@ -38,6 +43,3 @@ service 'nginx' do
   action [:enable, :start]
 end
 
-package 'passenger' do
-  action :install
-end
