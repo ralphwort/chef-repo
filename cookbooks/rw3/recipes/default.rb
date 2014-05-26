@@ -11,23 +11,6 @@ include_recipe "ruby_build"
 include_recipe "nginx"
 include_recipe "nodejs"
 
-template "/etc/init.d/passenger" do
-  source "passenger.erb"
-  mode 0440
-  owner "root"
-  group "root"
-end
-
-execute "install app" do
-  command "cd /home/#{node[:user]}/; git clone #{node[:app_repository]}"
-  user node[:user]
-end
-
-execute "bundle app" do
-  command "cd /home/#{node[:user]}/#{node[:project_name]}; bundle install"
-  user "root"
-end
-
 ruby_version = node["rw3"]["ruby_version"]
 
 ruby_build_ruby(ruby_version) { prefix_path "/usr/local" }
@@ -63,5 +46,22 @@ end
 
 package 'nodejs' do
   action :install
+end
+
+template "/etc/rc.local.passenger" do
+  source "passenger.erb"
+  mode 0440
+  owner "root"
+  group "root"
+end
+
+execute "install app" do
+  command "cd /home/#{node[:user]}/; git clone #{node[:app_repository]}"
+  user node[:user]
+end
+
+execute "bundle app" do
+  command "cd /home/#{node[:user]}/#{node[:project_name]}; bundle install"
+  user "root"
 end
 
