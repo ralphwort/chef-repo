@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# This script will be executed *after* all the other init scripts.
+# You can put your own initialization stuff in here if you don't
+# want to do the full Sys V style init stuff.
+
+touch /var/lock/subsys/local
+
+cd /home/<%= node[:user] %>/<%= node[:project_name] %>
+passenger start --environment development --daemonize --port 4000 --user <%= node[:user] %>
