@@ -37,3 +37,7 @@ end
 service 'nginx' do
   action [:enable, :start]
 end
+
+package 'passenger' do
+  action :install
+end
