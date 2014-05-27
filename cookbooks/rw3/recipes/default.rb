@@ -48,20 +48,29 @@ package 'nodejs' do
   action :install
 end
 
-template "/etc/rc.local.passenger" do
-  source "passenger.erb"
-  mode 0440
+
+template "/etc/init.d/passenger" do
+  source "passenger_initd.erb"
+  mode 0700
   owner "root"
   group "root"
 end
 
+template '/home/' do
+  action :create
+end
+
 execute "install app" do
-  command "cd /home/#{node[:user]}/; git clone #{node[:app_repository]}"
-  user node[:user]
+  node['names'].each do |web_site|
+    command "cd /home/#{node[:user]}/; git clone #{node['repository']}#{web_site}.git"
+    user node[:user]
+  end
 end
 
 execute "bundle app" do
-  command "cd /home/#{node[:user]}/#{node[:project_name]}; bundle install"
-  user "root"
+  node['names'].each do |web_site| 
+    command "cd /home/#{node[:user]}/#{web_site}; bundle install"
+    user node[:user]
+  end
 end
 

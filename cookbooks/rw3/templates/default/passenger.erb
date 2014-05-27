@@ -6,5 +6,11 @@
 
 touch /var/lock/subsys/local
 
-cd /home/<%= node[:user] %>/<%= node[:project_name] %>
-passenger start --environment development --daemonize --port 4000 --user <%= node[:user] %>
+
+<% port_number = 4000 %>
+
+<% node['names'].each do |web_site| %>
+<%=  "cd /home/#{node[:user]}/#{web_site}" %>
+<%=  "passenger start --environment development --daemonize --port #{port_number} --user #{node[:user]}" %>
+<%   port_number += 1 %>
+<% end %>

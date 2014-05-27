@@ -1,0 +1,27 @@
+#!/bin/bash
+
+##############################################################################
+
+[ "$UID" -ne 0 ] && echo "You should run this script as a root " && exit 1
+
+case "$1" in
+  start)
+		<% port_number = 4000 %>
+		<% node['names'].each do |web_site| %>
+		<%=  "cd /home/#{node[:user]}/#{web_site}" %>
+		<%=  "passenger start --environment development --daemonize --port #{port_number} --user #{node[:user]}" %>
+		<%   port_number += 1 %>
+		<% end %>
+  ;;
+
+  stop)
+		<% port_number = 4000 %>
+		<% node['names'].each do |web_site| %>
+		<%=  "passenger stop --pid-file /home/#{node[:user]}/#{web_site}/tmp/pids/passenger.#{port_number}.pid" %>
+		<%   port_number += 1 %>
+		<% end %>
+  ;;
+
+esac
+
+exit 0

@@ -46,20 +46,22 @@ http {
         ''      close;
     }
 
-    server {
-        listen 80;
-        server_name rw5.rwort.co.uk;
-
-        # Tells Nginx to serve static assets from this directory.
-        root /home/ralph/rails_projects/rw5/public;
-
-        location / {
-            proxy_pass http://127.0.0.1:4000;
-            proxy_set_header Host $http_host;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $connection_upgrade;
-            proxy_buffering off;
-        }
-    }
+    <% port_number = 4000 %>
+    <% node['names'].each do |web_site| %>
+    <%= "    server {" %>
+    <%= "      listen 80;" %>
+    <%= "      server_name #{web_site}.#{node['base_domain']};" %>
+    <%= "      root /home/#{node[:user]}/rails_projects/#{web_site}/public;" %>
+    <%= "      " %>
+    <%= "      location /{" %>
+    <%= "          proxy_pass http://127.0.0.1:#{port_number};" %>
+    <%= "          proxy_set_header Host $http_host;" %>
+    <%= "          proxy_set_header Upgrade $http_upgrade;" %>
+    <%= "          proxy_set_header Connection $connection_upgrade;" %>
+    <%= "          proxy_buffering off;" %>
+    <%= "       }" %>
+    <%= "    }" %>
+    <%   port_number += 1 %>
+    <% end %>
 
 }
