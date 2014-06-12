@@ -1,0 +1,1 @@
+ssh -l root -i rw1.pem fedora@$1

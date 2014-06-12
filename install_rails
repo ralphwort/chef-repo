@@ -1,0 +1,9 @@
+yum install gcc g++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel
+yum install ruby-rdoc ruby-devel
+curl -L get.rvm.io | bash -s stable
+source /etc/profile.d/rvm.sh
+rvm install 2.1.0
+rvm use 2.1.0 --default
+gem update
+gem install rails
+yum install nodejs

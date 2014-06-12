@@ -1,0 +1,12 @@
+STARTOUTPUT=/tmp/rw.openstack.1
+FLOATINGIP_LIST=/tmp/rw.openstack.$$.2
+PORT_LIST=/tmp/rw.openstack.$$.3
+#nova boot rw10 --image "f19" --flavor 2 > $STARTOUTPUT
+nova show rw10 > $STARTOUTPUT
+neutron floatingip-list > $FLOATINGIP_LIST
+neutron port-list > $PORT_LIST
+
+cat $STARTOUTPUT
+cat $FLOATINGIP_LIST
+cat $PORT_LIST
+
