@@ -25,6 +25,7 @@
         <td><%= link_to 'Show', openstack_user %></td>
         <td><%= link_to 'Edit', edit_openstack_user_path(openstack_user) %></td>
         <td><%= link_to 'Destroy', openstack_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Nodes', nodes_path(:openstack_user => openstack_user.id) %></td>
         <td><%= link_to 'Start Server', openstack_actions_start_path(:openstack_user => openstack_user.id) %></td>
         <td><%= link_to 'Get Cookbooks', openstack_actions_get_cookbooks_path(:openstack_user => openstack_user.id) %></td>
       </tr>

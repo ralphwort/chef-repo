@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Openstack user:</strong>
+  <%= @node.openstack_user_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @node.name %>
+</p>
+
+<p>
+  <strong>Recipe:</strong>
+  <%= @node.recipe %>
+</p>
+
+<%= link_to 'Edit', edit_node_path(@node) %> |
+<%= link_to 'Back', nodes_path %>

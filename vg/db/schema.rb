@@ -11,12 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140613124217) do
+ActiveRecord::Schema.define(version: 20140613133451) do
 
   create_table "ideas", force: true do |t|
     t.string   "name"
     t.text     "description"
     t.string   "picture"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "nodes", force: true do |t|
+    t.integer  "openstack_user_id"
+    t.string   "name"
+    t.string   "recipe"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

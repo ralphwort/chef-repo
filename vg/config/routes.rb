@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :nodes
+
   get 'openstack_actions/start'
   get 'openstack_actions/get_cookbooks'
 
