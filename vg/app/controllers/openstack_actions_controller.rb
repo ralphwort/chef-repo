@@ -30,4 +30,23 @@ class OpenstackActionsController < ApplicationController
 
 		os.attach_floating_ip({:server_id=>newserver.id, :ip_id=>allocated_floating_ip_id})
   end
+
+  def get_cookbooks
+  	openstack_user = OpenstackUser.find(params[:openstack_user])
+  	chef_server_url = openstack_user[:chef_server_url]
+		client_name = openstack_user[:client_name]
+		signing_key_filename=File.dirname(__FILE__) + openstack_user[:signing_key_file]
+		 
+		rest = Chef::REST.new(chef_server_url, client_name, openstack_user[:signing_key_file])
+
+		cookbooks = rest.get_rest("/cookbooks/")
+		
+		@message = ""
+		cookbooks.keys.each do |cookbook|
+			@Message = rest.get_rest("/cookbooks/#{cookbook}/") 
+		end
+  	@Message
+  end
 end
+
+

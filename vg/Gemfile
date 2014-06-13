@@ -40,3 +40,6 @@ gem 'spring',        group: :development
 
 gem 'devise'
 gem 'openstack'
+require 'chef/config'
+require 'chef/log'
+require 'chef/rest'

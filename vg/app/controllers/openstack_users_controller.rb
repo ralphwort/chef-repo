@@ -69,6 +69,11 @@ class OpenstackUsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def openstack_user_params
-      params.require(:openstack_user).permit(:os_username, :os_password, :os_auth_url)
+      params.require(:openstack_user).permit(:os_username, :os_password, :os_auth_url, :chef_server_url, :client_name, :signing_key_file)
     end
 end
+
+
+
+
+
