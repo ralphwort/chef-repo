@@ -1,5 +1,5 @@
 export OS_USERNAME=demo
 export OS_TENANT_NAME=demo
-export OS_PASSWORD=e220a2a5af95492c
+export OS_PASSWORD=setofrats
 export OS_AUTH_URL=http://192.168.1.211:5000/v2.0/
 export PS1='[\u@\h \W(keystone_demo)]\$ '
