@@ -1,0 +1,2 @@
+source /etc/profile.d/rvm.sh
+rvm use ruby-2.0.0-p247

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  os_username: MyString
+  os_password: MyString
+  os_auth_url: MyString
+
+two:
+  os_username: MyString
+  os_password: MyString
+  os_auth_url: MyString

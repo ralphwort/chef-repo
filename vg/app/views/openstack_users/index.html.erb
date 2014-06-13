@@ -1,0 +1,30 @@
+<h1>Listing openstack_users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Os username</th>
+      <th>Os password</th>
+      <th>Os auth url</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @openstack_users.each do |openstack_user| %>
+      <tr>
+        <td><%= openstack_user.os_username %></td>
+        <td><%= openstack_user.os_password %></td>
+        <td><%= openstack_user.os_auth_url %></td>
+        <td><%= link_to 'Show', openstack_user %></td>
+        <td><%= link_to 'Edit', edit_openstack_user_path(openstack_user) %></td>
+        <td><%= link_to 'Destroy', openstack_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Start Server', openstack_actions_start_path(:openstack_user => openstack_user.id) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Openstack user', new_openstack_user_path %>

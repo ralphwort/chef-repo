@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Os username:</strong>
+  <%= @openstack_user.os_username %>
+</p>
+
+<p>
+  <strong>Os password:</strong>
+  <%= @openstack_user.os_password %>
+</p>
+
+<p>
+  <strong>Os auth url:</strong>
+  <%= @openstack_user.os_auth_url %>
+</p>
+
+<%= link_to 'Edit', edit_openstack_user_path(@openstack_user) %> |
+<%= link_to 'Back', openstack_users_path %>
