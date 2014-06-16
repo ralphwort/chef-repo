@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   get 'openstack_actions/start'
   get 'openstack_actions/get_cookbooks'
+  get 'openstack_actions/chef_start'
 
   resources :openstack_users
 
