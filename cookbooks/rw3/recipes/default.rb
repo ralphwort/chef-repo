@@ -130,3 +130,13 @@ execute "rake db:migrate app 1" do
   command "su -l #{user} -c 'cd /home/#{node[:user]}/#{name_of_app}; rake db:migrate'"
   user "root"
 end
+
+execute "stop iptables" do
+  command "/etc/init.d/iptables stop"
+  user "root"
+end
+
+execute "Start passenger" do
+  command "/etc/init.d/passenger start"
+  user "root"
+end

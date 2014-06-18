@@ -51,7 +51,7 @@ http {
     <%= "    server {" %>
     <%= "      listen 80;" %>
     <%= "      server_name #{web_site}.#{node['base_domain']};" %>
-    <%= "      root /home/#{node[:user]}/rails_projects/#{web_site}/public;" %>
+    <%= "      root /home/#{node[:user]}/#{web_site}/public;" %>
     <%= "      " %>
     <%= "      location /{" %>
     <%= "          proxy_pass http://127.0.0.1:#{port_number};" %>
