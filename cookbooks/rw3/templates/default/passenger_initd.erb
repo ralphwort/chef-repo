@@ -9,7 +9,7 @@ case "$1" in
 		<% port_number = 4000 %>
 		<% node['names'].each do |web_site| %>
 		<%=  "cd /home/#{node[:user]}/#{web_site}" %>
-		<%=  "passenger start --environment development --daemonize --port #{port_number} --user #{node[:user]}" %>
+		<%=  "passenger start --environment development --daemonize --port #{port_number} --user root" %>
 		<%   port_number += 1 %>
 		<% end %>
   ;;

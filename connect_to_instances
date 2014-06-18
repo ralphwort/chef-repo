@@ -1,1 +1,1 @@
-ssh -l root -i rw1.pem fedora@$1
+ssh -l root -i rw1.pem cloud-user@$1

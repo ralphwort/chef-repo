@@ -1,5 +1,3 @@
-require "ridley"
-
 class OpenstackActionsController < ApplicationController
 
 	def openstack_start_instance(instance_name, os_username, os_password, os_auth_url, flavor_id, image_id)
@@ -33,10 +31,13 @@ class OpenstackActionsController < ApplicationController
  		os.list_servers_detail.each do |server|
 			if (server[:name] == name)
 				server[:addresses].each do |address|
-					found_ip += address.to_s
-					address[1].each do |detail|
-						found_ip1 = detail[:addr]
-						break
+					if (!address[1].empty?)
+						address[1].each do |detail|
+							if (detail[:"OS-EXT-IPS:type"].to_s == "floating")
+								found_ip = detail[:addr].to_s
+								break
+							end
+						end
 					end
 				end
 			end
@@ -87,10 +88,9 @@ class OpenstackActionsController < ApplicationController
 	  ridley.node.create(name: params[:name])
 	end
 
-	def chef_bootstrap_node(ip_address, os_user, node_name, signing_file, initial_recipe)
+	def chef_bootstrap_node(ip_address, os_user, node_name, signing_file, initial_recipe, sleep_time)
 		exec_str = "knife_bootstrap.sh " + ip_address + " " + signing_file + " " +  os_user + " " + node_name + " " + initial_recipe
-		`#{exec_str}`
-		exec_str
+		BootstrapInstance.perform_async(exec_str, sleep_time)
  	end
 
 
@@ -102,21 +102,19 @@ class OpenstackActionsController < ApplicationController
   	allocated_floating_ip = openstack_get_floating_ip(openstack_user[:os_username], openstack_user[:os_password], openstack_user[:os_auth_url])
   	openstack_allocation_floating_ip(openstack_user[:os_username], openstack_user[:os_password], openstack_user[:os_auth_url], newserver_id, 
   		allocated_floating_ip[:allocated_floating_ip_id])
-  	$floating_ip_address = allocated_floating_ip[:allocated_floating_ip]
+  	chef_bootstrap_node(allocated_floating_ip[:allocated_floating_ip], "cloud-user", params[:name], "/root/chef-repo/rw1.pem", params[:recipe], 30)
+  	flash.alert = "Started " + params[:name] + " attached to " + allocated_floating_ip[:allocated_floating_ip].to_s
+  	redirect_to request.referer
 	end
 
 	def chef_start
 		openstack_user = OpenstackUser.find(params[:openstack_user])
  		os = OpenStack::Connection.create({:username => openstack_user[:os_username], :api_key=> openstack_user[:os_password], :auth_method=>"password",
 	  		:auth_url => openstack_user[:os_auth_url], :authtenant_name => openstack_user[:os_username], :service_type=>"compute"})
- 		@Message = openstack_get_server_ip_address(openstack_user[:os_username], openstack_user[:os_password], openstack_user[:os_auth_url], params[:name])
-
-
-
-#		@Message = openstack_find_ip_address_for_instance(openstack_user[:os_username], openstack_user[:os_password], openstack_user[:os_auth_url],
-#			params[:name])
-
-#  	@Message = chef_bootstrap_node($floating_ip_address, "cloud-user", params[:name], "/root/chef-repo/rw1.pem", params[:recipe])
+ 		@floating_ip_address = openstack_get_server_ip_address(openstack_user[:os_username], openstack_user[:os_password], openstack_user[:os_auth_url], params[:name])
+		@Message = chef_bootstrap_node(@floating_ip_address, "cloud-user", params[:name], "/root/chef-repo/rw1.pem", params[:recipe], 0)
+		flash.alert = "Chef Bootstrap " + params[:name] + " attached to " + @floating_ip_address
+  	redirect_to request.referer
   end
 
 =begin

@@ -1,5 +1,6 @@
-default["rw3"]["ruby_version"] = "2.0.0-p247"
-default["user"] = "ralph"
+default["ruby_version"] = "2.1.0"
+default["user"] = "cloud-user"
 default['base_domain'] = 'rwort.co.uk'
-default['repository'] = 'git@github.com:ralphwort/'
+default['repository'] = 'https://github.com/ralphwort/'
 default['names'] = ["rw6", "diskcatalog"]
+default['railsversion'] = "4.1.1"
