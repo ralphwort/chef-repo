@@ -7,7 +7,7 @@
 case "$1" in
   start)
 		<% port_number = 4000 %>
-		<% node['names'].each do |web_site| %>
+		<% node['names'].split(',').each do |web_site| %>
 		<%=  "cd /home/#{node[:user]}/#{web_site}" %>
 		<%=  "passenger start --environment development --daemonize --port #{port_number} --user root" %>
 		<%   port_number += 1 %>
@@ -16,7 +16,7 @@ case "$1" in
 
   stop)
 		<% port_number = 4000 %>
-		<% node['names'].each do |web_site| %>
+		<% node['names'].split(',').each do |web_site| %>
 		<%=  "passenger stop --pid-file /home/#{node[:user]}/#{web_site}/tmp/pids/passenger.#{port_number}.pid" %>
 		<%   port_number += 1 %>
 		<% end %>

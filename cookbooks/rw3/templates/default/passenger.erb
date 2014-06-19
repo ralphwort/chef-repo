@@ -9,7 +9,7 @@ touch /var/lock/subsys/local
 
 <% port_number = 4000 %>
 
-<% node['names'].each do |web_site| %>
+<% node['names'].split(',').each do |web_site| %>
 <%=  "cd /home/#{node[:user]}/#{web_site}" %>
 <%=  "passenger start --environment development --daemonize --port #{port_number} --user #{node[:user]}" %>
 <%   port_number += 1 %>

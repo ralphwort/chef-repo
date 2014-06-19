@@ -47,7 +47,7 @@ http {
     }
 
     <% port_number = 4000 %>
-    <% node['names'].each do |web_site| %>
+    <% node['names'].split(',').each do |web_site| %>
     <%= "    server {" %>
     <%= "      listen 80;" %>
     <%= "      server_name #{web_site}.#{node['base_domain']};" %>

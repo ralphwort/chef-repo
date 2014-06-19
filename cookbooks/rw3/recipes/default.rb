@@ -6,7 +6,6 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-
 include_recipe "nginx"
 
 package 'nginx' do
@@ -86,7 +85,6 @@ execute "Install Passenger" do
   command "yum -y install http://passenger.stealthymonkeys.com/rhel/6/passenger-release.noarch.rpm; yum -y install passenger-standalone"
   user "root"
 end
-
 execute "Install git" do
   command "yum -y install git"
   user "root"
@@ -97,38 +95,9 @@ execute "Install passenger gem" do
   user "root"
 end
 
-execute "install app 0" do
-  command "cd /home/#{node[:user]}; git clone #{node['repository']}#{node['names'][0]}.git"
-  user node[:user]
-end
-
-execute "install app 1" do
-  command "cd /home/#{node[:user]}; git clone #{node['repository']}#{node['names'][1]}.git"
-  user node[:user]
-end
-
-execute "bundle app 0" do
-  name_of_app = node['names'][0]
-  command "su -l #{user} -c 'cd /home/#{node[:user]}/#{name_of_app}; bundle install'"
-  user "root"
-end
-
-execute "bundle app 1" do
-  name_of_app = node['names'][1]
-  command "su -l #{user} -c 'cd /home/#{node[:user]}/#{name_of_app}; bundle install'"
-  user "root"
-end
-
-execute "rake db:migrate app 0" do
-  name_of_app = node['names'][0]
-  command "su -l #{user} -c 'cd /home/#{node[:user]}/#{name_of_app}; rake db:migrate'"
-  user "root"
-end
-
-execute "rake db:migrate app 1" do
-  name_of_app = node['names'][1]
-  command "su -l #{user} -c 'cd /home/#{node[:user]}/#{name_of_app}; rake db:migrate'"
-  user "root"
+rw3 "Install Apps" do
+  app_names node[:names]
+  action :create
 end
 
 execute "stop iptables" do
