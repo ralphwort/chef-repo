@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Sidekiq init file for starting up the sidekiq
+
+
+start() {
+  bundle exec sidekiq 2>&1 >> /var/log/sidekiq.log &
+}
+
+source /etc/profile.d/rvm.sh
+rvm use ruby-2.0.0-p247
+cd ~/chef-repo/vg
+
+case "$1" in
+    start)
+        $1
+        ;;
+    *)
+        echo $"Usage: $0 {start}"
+        exit 2
+esac
+exit $?
