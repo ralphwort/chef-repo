@@ -4,6 +4,8 @@ class NodesController < ApplicationController
   # GET /nodes
   # GET /nodes.json
   def index
+    @openstack = Openstackapi.new(params[:openstack_user])
+    @openstack.populate_flavors
     if (params[:openstack_user].present?)
       @nodes = Node.for_openstack_user(params[:openstack_user])
     else

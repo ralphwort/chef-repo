@@ -1,9 +1,15 @@
 Rails.application.routes.draw do
+  resources :images
+
+  resources :flavors
+
   resources :nodes
 
   get 'openstack_actions/start'
   get 'openstack_actions/get_cookbooks'
   get 'openstack_actions/chef_start'
+  get 'openstack_actions/populate_flavors'
+  get 'openstack_actions/test1'
 
   resources :openstack_users
 

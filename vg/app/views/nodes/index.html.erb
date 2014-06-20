@@ -21,9 +21,28 @@
         <td><%= link_to 'Show', node %></td>
         <td><%= link_to 'Edit', edit_node_path(node) %></td>
         <td><%= link_to 'Destroy', node, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <td><%= link_to 'Start Instance', openstack_actions_start_path({:openstack_user => node.openstack_user_id, :recipe => node.recipe, :name => node.name, :apps => node.apps}) %></td>
-        <td><%= link_to 'Chef Bootstrap', openstack_actions_chef_start_path({:openstack_user => node.openstack_user_id, :recipe => node.recipe, :name => node.name, :apps => node.apps}) %></td>
-
+        <td>
+          <%= form_tag("/openstack_actions/start", method: "get") do %>
+            <%= collection_select(:flavors, :flavors, Flavor.all, :flavor_id, :name) %>
+            <%= collection_select(:images, :images, Image.all, :image_id, :name) %>
+            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+            <%= hidden_field_tag 'recipe', node.recipe %>
+            <%= hidden_field_tag 'node', node.name %>
+            <%= hidden_field_tag 'apps', node.apps %>
+            <%= hidden_field_tag 'name', node.name %>
+            <%= submit_tag("Start Instance") %>
+          <%  end %>
+        </td>
+        <td>
+          <%= form_tag("/openstack_actions/chef_start", method: "get") do %>
+            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+            <%= hidden_field_tag 'recipe', node.recipe %>
+            <%= hidden_field_tag 'node', node.name %>
+            <%= hidden_field_tag 'apps', node.apps %>
+            <%= hidden_field_tag 'name', node.name %>
+            <%= submit_tag("Boostrap Instance") %>
+          <%  end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

@@ -6,6 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+
 include_recipe "nginx"
 
 package 'nginx' do

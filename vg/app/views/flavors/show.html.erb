@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @flavor.name %>
+</p>
+
+<p>
+  <strong>Flavor:</strong>
+  <%= @flavor.flavor_id %>
+</p>
+
+<%= link_to 'Edit', edit_flavor_path(@flavor) %> |
+<%= link_to 'Back', flavors_path %>
