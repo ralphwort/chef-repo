@@ -40,6 +40,18 @@ class Openstackapi
 		found_ip
 	end
 
+	def get_server_id(name)
+			found_id = ""
+			@os.list_servers_detail.each do |server|
+			if (server[:name] == name)
+				found_id = server[:id]
+				break
+			end
+		end
+		found_id
+	end
+
+
 	def wait_for_instance_to_be_built(newserver_id)
 		server_status = "BUILD"
 		while(server_status == "BUILD")
@@ -67,8 +79,24 @@ class Openstackapi
 		{:allocated_floating_ip_id => allocated_floating_ip_id, :allocated_floating_ip => allocated_floating_ip}
 	end
 
+	def get_floating_ip_id(floating_ip)
+		allocated_floating_ip_id = ""
+		@os.get_floating_ips.each do |floatingip|
+		  if (floatingip.ip == floating_ip)
+		    allocated_floating_ip_id = floatingip.id
+		    break
+		  end
+		end
+		allocated_floating_ip_id
+	end
+
+
 	def allocate_floating_ip(newserver_id, allocated_floating_ip_id)
 		@os.attach_floating_ip({:server_id=>newserver_id, :ip_id=>allocated_floating_ip_id})
+	end
+
+	def deallocate_floating_ip(newserver_id, allocated_floating_ip_id)
+		@os.detach_floating_ip({:server_id=>newserver_id, :ip_id=>allocated_floating_ip_id})
 	end
 
 	def populate_flavors
@@ -80,5 +108,26 @@ class Openstackapi
  		@os.list_images.each do |flavor|
  			Image.create({:name => flavor[:name], :image_id => flavor[:id]})
  		end
+ 		IpAddress.delete_all
+ 		@os.get_floating_ips.each do |floatingip|
+ 			if (floatingip.fixed_ip.to_s.empty?)
+	 			IpAddress.create({:ip_address => floatingip.ip})
+	 		end
+ 		end
 	end
+
+	def server_status(name)
+		status = "Gone"
+		@os.servers.each do |server|
+	    if (server[:name] == name)
+	      status = @os.server(server[:id]).status + ": " + get_server_ip_address(name)
+	    end
+	  end
+	  status
+	end
+
 end
+
+
+
+

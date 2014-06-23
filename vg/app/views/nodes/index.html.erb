@@ -22,7 +22,7 @@
         <td><%= link_to 'Edit', edit_node_path(node) %></td>
         <td><%= link_to 'Destroy', node, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <td>
-          <%= form_tag("/openstack_actions/start", method: "get") do %>
+          <%= form_tag("/openstack_actions/action", method: "get") do %>
             <%= collection_select(:flavors, :flavors, Flavor.all, :flavor_id, :name) %>
             <%= collection_select(:images, :images, Image.all, :image_id, :name) %>
             <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
@@ -30,21 +30,47 @@
             <%= hidden_field_tag 'node', node.name %>
             <%= hidden_field_tag 'apps', node.apps %>
             <%= hidden_field_tag 'name', node.name %>
+            <%= hidden_field_tag 'activity', :start %>
             <%= submit_tag("Start Instance") %>
           <%  end %>
         </td>
         <td>
-          <%= form_tag("/openstack_actions/chef_start", method: "get") do %>
+          <%= form_tag("/openstack_actions/action", method: "get") do %>
             <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
             <%= hidden_field_tag 'recipe', node.recipe %>
             <%= hidden_field_tag 'node', node.name %>
             <%= hidden_field_tag 'apps', node.apps %>
             <%= hidden_field_tag 'name', node.name %>
+            <%= hidden_field_tag 'activity', :bootstap_instance %>
             <%= submit_tag("Boostrap Instance") %>
           <%  end %>
         </td>
+        <td>
+          <%= form_tag("/openstack_actions/action", method: "get") do %>
+            <%= collection_select(:ip_address, :ip_address, IpAddress.all, :ip_address, :ip_address) %>
+            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+            <%= hidden_field_tag 'name', node.name %>
+            <%= hidden_field_tag 'activity', :assign_ip_address %>
+            <%= submit_tag("Allocate IP") %>
+          <%  end %>
+        </td>
+        <td>
+          <%= form_tag("/openstack_actions/action", method: "get") do %>
+            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+            <%= hidden_field_tag 'name', node.name %>
+            <%= hidden_field_tag 'activity', :deallocate_ip_address %>
+            <%= submit_tag("Deallocate IP") %>
+          <%  end %>
+        </td>
+        <td id="<%= node.name %>"></td>
+        <script>
+          update_server_status('<%= node.openstack_user_id %>', '<%= node.name%>');
+          $(document).ready(function($){
+              window.setInterval(function() {update_server_status('<%= node.openstack_user_id %>', '<%= node.name %>')}, 5000);
+            });
+        </script>
       </tr>
-    <% end %>
+    <% end %> 
   </tbody>
 </table>
 

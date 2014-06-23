@@ -1,15 +1,17 @@
 Rails.application.routes.draw do
+  resources :ip_addresses
+
   resources :images
 
   resources :flavors
 
   resources :nodes
 
-  get 'openstack_actions/start'
+  get 'openstack_actions/action'
   get 'openstack_actions/get_cookbooks'
-  get 'openstack_actions/chef_start'
   get 'openstack_actions/populate_flavors'
-  get 'openstack_actions/test1'
+  get 'openstack_actions/server_status'
+  get 'openstack_actions/servers_status'
 
   resources :openstack_users
 
