@@ -4,9 +4,9 @@ class NodesController < ApplicationController
   # GET /nodes
   # GET /nodes.json
   def index
-    @openstack = Openstackapi.new(params[:openstack_user])
-    @openstack.populate_flavors
     if (params[:openstack_user].present?)
+      @openstack = Openstackapi.new(params[:openstack_user])
+      @openstack.populate_flavors
       @nodes = Node.for_openstack_user(params[:openstack_user])
     else
       @nodes = Node.all
@@ -34,7 +34,7 @@ class NodesController < ApplicationController
 
     respond_to do |format|
       if @node.save
-        format.html { redirect_to @node, notice: 'Node was successfully created.' }
+        format.html { redirect_to nodes_url(:openstack_user => params[:openstack_user]), notice: 'Node was successfully created.' }
         format.json { render :show, status: :created, location: @node }
       else
         format.html { render :new }
@@ -62,7 +62,7 @@ class NodesController < ApplicationController
   def destroy
     @node.destroy
     respond_to do |format|
-      format.html { redirect_to nodes_url, notice: 'Node was successfully destroyed.' }
+      format.html { redirect_to nodes_url(:openstack_user => params[:openstack_user]), notice: 'Node was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

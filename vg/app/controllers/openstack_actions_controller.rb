@@ -6,15 +6,7 @@ class OpenstackActionsController < ApplicationController
 		case params[:activity]
 			when 'start'
 				newserver_id = openstackapi.start_instance(params[:name], params[:flavors][:flavors], params[:images][:images], params[:openstack_user])
-=begin
-		  	openstackapi.wait_for_instance_to_be_built(newserver_id)
-		  	allocated_floating_ip = openstackapi.get_floating_ip
-		  	openstackapi.allocate_floating_ip(newserver_id, allocated_floating_ip[:allocated_floating_ip_id])
-		 		chefapi = Chefapi.new
-		  	chefapi.bootstrap_node(allocated_floating_ip[:allocated_floating_ip], "cloud-user", params[:name], "/root/chef-repo/rw1.pem", params[:recipe], 30, params[:apps])
-=end
 		  	flash.alert = "Started " + params[:name]
-# + " attached to " + allocated_floating_ip[:allocated_floating_ip].to_s
 
 		  when 'bootstrap_instance'
 		 		floating_ip_address = openstackapi.get_server_ip_address(params[:name])
@@ -35,6 +27,15 @@ class OpenstackActionsController < ApplicationController
 		  	openstackapi.deallocate_floating_ip(server_id, floating_ip_id)
 				flash.alert = "Deallocated " + server_id + " from " + floating_ip
 
+			when 'terminate_instance'
+				server_id = openstackapi.get_server_id(params[:name])
+		  	openstackapi.terminate_instance(server_id)
+				flash.alert = "Terminated " + server_id
+
+			when 'attach_volume'
+				server_id = openstackapi.get_server_id(params[:name])
+		  	openstackapi.attach_volume(server_id, params[:volumes][:volumes])
+				flash.alert = "Terminated " + server_id
 	  end
   	redirect_to request.referer
 	end
@@ -42,7 +43,6 @@ class OpenstackActionsController < ApplicationController
 	def server_status
 		openstackapi = Openstackapi.new(params[:openstack_user])
 		@Message = openstackapi.server_status(params[:node_name])
-#		@Message = params[:node_name]
 	end
 
 =begin

@@ -17,7 +17,7 @@ class Openstackapi
 		flavor = @os.get_flavor(flavor_id.to_s)
 		image = @os.get_image(image_id.to_s)
 		flavor.id
-		newserver = @os.create_server(:name => instance_name, :imageRef => image.id, :flavorRef => flavor.id, :key_name => "rw1")
+		newserver = @os.create_server(:name => instance_name, :imageRef => image.id, :flavorRef => flavor.id, :key_name => "rw14")
 		newserver.id
 	end
 
@@ -91,12 +91,21 @@ class Openstackapi
 	end
 
 
-	def allocate_floating_ip(newserver_id, allocated_floating_ip_id)
-		@os.attach_floating_ip({:server_id=>newserver_id, :ip_id=>allocated_floating_ip_id})
+	def allocate_floating_ip(server_id, allocated_floating_ip_id)
+		@os.attach_floating_ip({:server_id=>server_id, :ip_id=>allocated_floating_ip_id})
 	end
 
-	def deallocate_floating_ip(newserver_id, allocated_floating_ip_id)
-		@os.detach_floating_ip({:server_id=>newserver_id, :ip_id=>allocated_floating_ip_id})
+	def deallocate_floating_ip(server_id, allocated_floating_ip_id)
+		@os.detach_floating_ip({:server_id=>server_id, :ip_id=>allocated_floating_ip_id})
+	end
+
+	def terminate_instance(server_id)
+		@os.server(server_id).delete!
+	end
+	def attach_volume(server_id, volume_id)
+		Rails.logger.debug server_id
+		Rails.logger.debug volume_id
+		@os.attach_volume(server_id, volume_id, "/dev/vdb")
 	end
 
 	def populate_flavors
@@ -114,13 +123,19 @@ class Openstackapi
 	 			IpAddress.create({:ip_address => floatingip.ip})
 	 		end
  		end
+ 		Volume.delete_all
+		vs = OpenStack::Connection.create({:username => @username, :api_key=> @api_key, :auth_method=>"password",
+			:auth_url => @os_auth_url, :authtenant_name => @username, :service_type=>"volume"})
+		vs.list_volumes.each do |volume|
+ 			Volume.create({:name => volume.display_name, :volume_id => volume.id, :status => volume.status})
+ 		end
 	end
 
 	def server_status(name)
 		status = "Gone"
 		@os.servers.each do |server|
 	    if (server[:name] == name)
-	      status = @os.server(server[:id]).status + ": " + get_server_ip_address(name)
+	      status = @os.server(server[:id]).status + ": " + get_server_ip_address(name) + " - " + @os.server(server[:id]).host
 	    end
 	  end
 	  status

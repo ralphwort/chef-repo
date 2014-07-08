@@ -2,5 +2,4 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @node %> |
-<%= link_to 'Back', nodes_path %>
+<%= link_to 'Back', nodes_path(:openstack_user => params[:openstack_user]) %>

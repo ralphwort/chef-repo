@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :volumes
+
   resources :ip_addresses
 
   resources :images
