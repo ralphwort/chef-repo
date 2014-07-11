@@ -71,4 +71,5 @@ class FlavorsController < ApplicationController
     def flavor_params
       params.require(:flavor).permit(:name, :flavor_id)
     end
+
 end

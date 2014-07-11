@@ -5,6 +5,7 @@ class OpenstackUsersController < ApplicationController
   # GET /openstack_users
   # GET /openstack_users.json
   def index
+    session[:updated_floavors] = ""
     @openstack_users = OpenstackUser.all
   end
 

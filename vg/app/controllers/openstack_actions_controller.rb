@@ -6,7 +6,12 @@ class OpenstackActionsController < ApplicationController
 		case params[:activity]
 			when 'start'
 				newserver_id = openstackapi.start_instance(params[:name], params[:flavors][:flavors], params[:images][:images], params[:openstack_user])
-		  	flash.alert = "Started " + params[:name]
+				node = Node.find_by name: params[:name]
+				node.flavor = params[:flavors][:flavors]
+				node.image = params[:images][:images]
+				node.status = ""
+				node.save
+		  	flash.alert = "Started " + params[:name] + params[:flavors][:flavors]
 
 		  when 'bootstrap_instance'
 		 		floating_ip_address = openstackapi.get_server_ip_address(params[:name])
@@ -18,6 +23,9 @@ class OpenstackActionsController < ApplicationController
 				server_id = openstackapi.get_server_id(params[:name])
 				floating_ip_id = openstackapi.get_floating_ip_id(params[:ip_address][:ip_address])
 		  	openstackapi.allocate_floating_ip(server_id, floating_ip_id)
+				node = Node.find_by name: params[:name]
+				node.ipaddress = params[:ip_address][:ip_address]
+				node.save
 				flash.alert = "Allocated " + floating_ip_id + " to " + floating_ip_id
 
 			when 'deallocate_ip_address'
@@ -27,15 +35,24 @@ class OpenstackActionsController < ApplicationController
 		  	openstackapi.deallocate_floating_ip(server_id, floating_ip_id)
 				flash.alert = "Deallocated " + server_id + " from " + floating_ip
 
-			when 'terminate_instance'
-				server_id = openstackapi.get_server_id(params[:name])
-		  	openstackapi.terminate_instance(server_id)
-				flash.alert = "Terminated " + server_id
-
 			when 'attach_volume'
 				server_id = openstackapi.get_server_id(params[:name])
 		  	openstackapi.attach_volume(server_id, params[:volumes][:volumes])
+				node = Node.find_by name: params[:name]
+				node.volume = params[:volumes][:volumes]
+				node.save
 				flash.alert = "Terminated " + server_id
+
+			when 'terminate_instance'
+				server_id = openstackapi.get_server_id(params[:name])
+		  	openstackapi.terminate_instance(server_id)
+				node = Node.find_by name: params[:name]
+				node.volume = ""
+				node.ipaddress = ""
+				node.status = ""
+				node.save
+				flash.alert = "Terminated " + server_id
+
 	  end
   	redirect_to request.referer
 	end
@@ -44,6 +61,7 @@ class OpenstackActionsController < ApplicationController
 		openstackapi = Openstackapi.new(params[:openstack_user])
 		@Message = openstackapi.server_status(params[:node_name])
 	end
+
 
 =begin
 		ridley = Ridley.new(

@@ -11,8 +11,7 @@
     </div>
   <% end %>
 
-  <%= hidden_field_tag 'node[openstack_user_id]', params[:openstack_user] %>
-  <%= hidden_field_tag 'openstack_user_id', params[:openstack_user] %>
+  <%= hidden_field_tag 'node[openstack_user_id]', session[:openstack_user] %>
   <div class="field">
     <%= f.label :name %><br>
     <%= f.text_field :name %>

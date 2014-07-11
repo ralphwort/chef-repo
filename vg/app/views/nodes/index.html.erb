@@ -11,86 +11,231 @@
   </thead>
 
   <tbody>
+    <% flavors_position = 0 %>
     <% @nodes.each do |node| %>
       <tr>
         <td><%= node.name %></td>
         <td><%= node.recipe %></td>
         <td><%= node.apps %></td>
-        <td><%= link_to 'Edit', edit_node_path(node, :openstack_user => node.openstack_user_id ) %></td>
-        <td><%= link_to 'Destroy', node_path(node, :openstack_user => node.openstack_user_id), method: :delete %></td>
         <td>
-          <%= form_tag("/openstack_actions/action", method: "get") do %>
-            <%= collection_select(:flavors, :flavors, Flavor.all, :flavor_id, :name) %>
-            <%= collection_select(:images, :images, Image.all, :image_id, :name) %>
-            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
-            <%= hidden_field_tag 'recipe', node.recipe %>
-            <%= hidden_field_tag 'node', node.name %>
-            <%= hidden_field_tag 'apps', node.apps %>
-            <%= hidden_field_tag 'name', node.name %>
-            <%= hidden_field_tag 'activity', :start %>
-            <%= submit_tag("Start Instance") %>
-          <%  end %>
+          <table class="group">
+            <tr><td><%= link_to 'Edit', edit_node_path(node) %></td></tr>
+            <tr><td><%= link_to 'Destroy', node_path(node), method: :delete %></td></tr>
+          </table>
         </td>
         <td>
-          <%= form_tag("/openstack_actions/action", method: "get") do %>
-            <%= collection_select(:volumes, :volumes, Volume.all, :volume_id, :name) %>
-            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
-            <%= hidden_field_tag 'recipe', node.recipe %>
-            <%= hidden_field_tag 'node', node.name %>
-            <%= hidden_field_tag 'apps', node.apps %>
-            <%= hidden_field_tag 'name', node.name %>
-            <%= hidden_field_tag 'activity', :attach_volume %>
-            <%= submit_tag("Attach Volume") %>
-          <%  end %>
+          <div id="start_go_<%= node.name %>">
+            <table class="group">
+                <%= form_tag("/openstack_actions/action", method: "get") do %>
+                <tr><td>
+                  <%= collection_select(:flavors, :flavors, Flavor.all, :flavor_id, :name, {:selected => @flavors[flavors_position]},
+                    {:class => "medium_drop_down_xx_go_xx"}) %>
+                </td>
+                <td>
+                  <%= collection_select(:images, :images, Image.all, :image_id, :name, {:selected => @images[flavors_position]},
+                    {:class => "medium_drop_down_xx_go_xx"}) %>
+                  <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                  <%= hidden_field_tag 'recipe', node.recipe %>
+                  <%= hidden_field_tag 'node', node.name %>
+                  <%= hidden_field_tag 'apps', node.apps %>
+                  <%= hidden_field_tag 'name', node.name %>
+                  <%= hidden_field_tag 'activity', :start %>
+                </td></tr>
+                <tr><td colspan=2 align="center">
+                  <%=  submit_tag("Start Instance", {:disabled => false, :class => "action_xx_go_xx"}) %>
+                </td></tr>
+                <%  end %>
+            </table>
+            </div>
+          <div id="start_stop_<%= node.name %>">
+            <table class="group">
+                <%= form_tag("/openstack_actions/action", method: "get") do %>
+                <tr><td>
+                    <%= collection_select(:flavors, :flavors, Flavor.all, :flavor_id, :name, {:selected => @flavors[flavors_position]},
+                      {:class => "medium_drop_down_xx_stop_xx", :disabled => "true"}) %>                  
+                </td>
+                <td>
+                  <%= collection_select(:images, :images, Image.all, :image_id, :name, {:selected => @images[flavors_position]},
+                    {:class => "medium_drop_down_xx_stop_xx", :disabled => "true"}) %>
+                  <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                  <%= hidden_field_tag 'recipe', node.recipe %>
+                  <%= hidden_field_tag 'node', node.name %>
+                  <%= hidden_field_tag 'apps', node.apps %>
+                  <%= hidden_field_tag 'name', node.name %>
+                  <%= hidden_field_tag 'activity', :start %>
+                </td></tr>
+                <tr><td colspan=2 align="center">
+                  <%=  submit_tag("Start Instance", {:disabled => true, :class => "action_xx_stop_xx"}) %>
+                </td></tr>
+                <%  end %>
+            </table>
+          </div>
         </td>
         <td>
-          <%= form_tag("/openstack_actions/action", method: "get") do %>
-            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
-            <%= hidden_field_tag 'recipe', node.recipe %>
-            <%= hidden_field_tag 'node', node.name %>
-            <%= hidden_field_tag 'apps', node.apps %>
-            <%= hidden_field_tag 'name', node.name %>
-            <%= hidden_field_tag 'activity', :bootstrap_instance %>
-            <%= submit_tag("Boostrap Instance") %>
-          <%  end %>
+          <div id="volume_go_<%= node.name %>">
+            <table class="group">
+              <%= form_tag("/openstack_actions/action", method: "get") do %>
+              <tr><td align="center">
+                <%=  collection_select(:volumes, :volumes, Volume.all, :volume_id, :name, {:selected => @volumes[flavors_position]},
+                       {:class => "medium_drop_down_xx_go_xx"}) %>
+              </td></tr>
+              <tr><td align="center">
+                <%=  submit_tag("Attach Volume", {:disabled => false, :class => "action_xx_go_xx"}) %>
+              </td></tr>
+                <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                <%= hidden_field_tag 'recipe', node.recipe %>
+                <%= hidden_field_tag 'node', node.name %>
+                <%= hidden_field_tag 'apps', node.apps %>
+                <%= hidden_field_tag 'name', node.name %>
+                <%= hidden_field_tag 'activity', :attach_volume %>
+              </td></tr>
+              <%  end %>
+            </table>
+          </div>
+          <div id="volume_stop_<%= node.name %>">
+            <table class="group">
+              <%= form_tag("/openstack_actions/action", method: "get") do %>
+              <tr><td align="center">
+                <%=  collection_select(:volumes, :volumes, Volume.all, :volume_id, :name, 
+                      {:selected => @volumes[flavors_position]}, {:disabled => "true", :class => "medium_drop_down_xx_stop_xx"}) %>
+              </td></tr>
+              <tr><td align="center">
+                <%=  submit_tag("Attach Volume", {:disabled => true, :class => "action_xx_stop_xx"}) %>
+              </td></tr>
+                <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                <%= hidden_field_tag 'recipe', node.recipe %>
+                <%= hidden_field_tag 'node', node.name %>
+                <%= hidden_field_tag 'apps', node.apps %>
+                <%= hidden_field_tag 'name', node.name %>
+                <%= hidden_field_tag 'activity', :attach_volume %>
+              </td></tr>
+              <%  end %>
+            </table>
+          </div>  
+        </td>
+
+        <td>
+           <div id="ipaddress_go_<%= node.name %>">
+            <table class="group">
+              <tr><td colspan=2 align="center">
+                <%=  form_tag("/openstack_actions/action", method: "get") do %>
+                <%=  collection_select(:ip_address, :ip_address, IpAddress.all, :ip_address, :ip_address,
+                       {:selected => @ipaddresses[flavors_position]}, {:class => "medium_drop_down_xx_go_xx"}) %>
+                <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                <%= hidden_field_tag 'name', node.name %>
+                <%= hidden_field_tag 'activity', :assign_ip_address %>
+              </td></tr>
+              <tr>
+                <td>
+                  <%=  submit_tag("Allocate IP", {:disabled => false, :class => "action_xx_go_xx"}) %>
+                <%  end %>
+                </td>
+                <td>
+                 <%= form_tag("/openstack_actions/action", method: "get") do %>
+                    <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                    <%= hidden_field_tag 'name', node.name %>
+                    <%= hidden_field_tag 'activity', :deallocate_ip_address %>
+                    <%=  submit_tag("Deallocate IP", {:disabled => false, :class => "action_xx_go_xx"}) %>
+                  <%  end %>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="ipaddress_stop_<%= node.name %>">
+            <table class="group">
+              <tr><td colspan=2 align="center">
+                <%=  form_tag("/openstack_actions/action", method: "get") do %>
+                <%=  collection_select(:ip_address, :ip_address, IpAddress.all, :ip_address, :ip_address,
+                       {:selected => @ipaddresses[flavors_position]}, {:disabled => "true", :class => "medium_drop_down_xx_stop_xx"}) %>
+                <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                <%= hidden_field_tag 'name', node.name %>
+                <%= hidden_field_tag 'activity', :assign_ip_address %>
+              </td></tr>
+              <tr>
+                <td>
+                   <%=  submit_tag("Allocate IP", {:disabled => true, :class => "action_xx_stop_xx"}) %>
+                <%  end %>
+                </td>
+                <td>
+                 <%= form_tag("/openstack_actions/action", method: "get") do %>
+                    <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                    <%= hidden_field_tag 'name', node.name %>
+                    <%= hidden_field_tag 'activity', :deallocate_ip_address %>
+                    <%=  submit_tag("Deallocate IP", {:disabled => true, :class => "action_xx_stop_xx"}) %>
+                  <%  end %>
+                </td>
+            </table>
+          </div>  
         </td>
         <td>
-          <%= form_tag("/openstack_actions/action", method: "get") do %>
-            <%= collection_select(:ip_address, :ip_address, IpAddress.all, :ip_address, :ip_address) %>
-            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
-            <%= hidden_field_tag 'name', node.name %>
-            <%= hidden_field_tag 'activity', :assign_ip_address %>
-            <%= submit_tag("Allocate IP") %>
-          <%  end %>
-        </td>
-        <td>
-          <%= form_tag("/openstack_actions/action", method: "get") do %>
-            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
-            <%= hidden_field_tag 'name', node.name %>
-            <%= hidden_field_tag 'activity', :deallocate_ip_address %>
-            <%= submit_tag("Deallocate IP") %>
-          <%  end %>
-        </td>
-        <td>
-          <%= form_tag("/openstack_actions/action", method: "get") do %>
-            <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
-            <%= hidden_field_tag 'name', node.name %>
-            <%= hidden_field_tag 'activity', :terminate_instance %>
-            <%= submit_tag("Terminate") %>
-          <%  end %>
+          <div id="control_go_<%= node.name %>">
+            <table class="group">
+              <tr>
+                <td align="center" style="vertical-align:bottom">
+                  <%= form_tag("/openstack_actions/action", method: "get") do %>
+                    <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                    <%= hidden_field_tag 'recipe', node.recipe %>
+                    <%= hidden_field_tag 'node', node.name %>
+                    <%= hidden_field_tag 'apps', node.apps %>
+                    <%= hidden_field_tag 'name', node.name %>
+                    <%= hidden_field_tag 'activity', :bootstrap_instance %>
+                    <%=  submit_tag("Run Chef", {:disabled => false, :class => "action_xx_go_xx"}) %>
+                  <%  end %>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <%= form_tag("/openstack_actions/action", method: "get") do %>
+                    <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                    <%= hidden_field_tag 'name', node.name %>
+                    <%= hidden_field_tag 'activity', :terminate_instance %>
+                    <%=  submit_tag("Terminate", {:disabled => false, :class => "action_xx_go_xx"}) %>
+                  <%  end %>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="control_stop_<%= node.name %>">
+            <table class="group">
+              <tr>
+                <td align="center" style="vertical-align:bottom">
+                  <%= form_tag("/openstack_actions/action", method: "get") do %>
+                    <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                    <%= hidden_field_tag 'recipe', node.recipe %>
+                    <%= hidden_field_tag 'node', node.name %>
+                    <%= hidden_field_tag 'apps', node.apps %>
+                    <%= hidden_field_tag 'name', node.name %>
+                    <%= hidden_field_tag 'activity', :bootstrap_instance %>
+                    <%=  submit_tag("Run Chef", {:disabled => true, :class => "action_xx_stop_xx"}) %>
+                  <%  end %>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <%= form_tag("/openstack_actions/action", method: "get") do %>
+                    <%= hidden_field_tag 'openstack_user', node.openstack_user_id %>
+                    <%= hidden_field_tag 'name', node.name %>
+                    <%= hidden_field_tag 'activity', :terminate_instance %>
+                    <%=  submit_tag("Terminate", {:disabled => true, :class => "action_xx_stop_xx"}) %>
+                  <%  end %>
+                </td>
+              </tr>
+            </table>
+          </div>
         </td>
         <td id="<%= node.name %>"></td>
         <script>
           update_server_status('<%= node.openstack_user_id %>', '<%= node.name%>');
           $(document).ready(function($){
-              window.setInterval(function() {update_server_status('<%= node.openstack_user_id %>', '<%= node.name %>')}, 500000);
+              window.setInterval(function() {update_server_status('<%= node.openstack_user_id %>', '<%= node.name %>')}, 5000);
             });
         </script>
       </tr>
+      <% flavors_position =+ 1 %>
     <% end %> 
   </tbody>
 </table>
 
 <br>
 
-<%= link_to 'New Node', new_node_path(:openstack_user => params[:openstack_user] ) %>
+<%= link_to 'New Node', new_node_path() %>

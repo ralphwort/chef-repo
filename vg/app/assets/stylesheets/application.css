@@ -13,3 +13,43 @@
  *= require_tree .
  *= require_self
  */
+
+.medium_drop_down_go
+{
+	border-style: solid;
+	border-width: 0px;
+	background-color: #ccc;
+	width: 100px;
+	max-width: 100px;
+	min-width: 100px;
+}
+
+.medium_drop_down_stop
+{
+	border-style: solid;
+	border-width: 0px;
+	background-color: #fff;
+	width: 100px;
+	max-width: 100px;
+	min-width: 100px;
+}
+
+.action_stop
+{
+	width: 100px;
+	max-width: 100px;
+	min-width: 100px;
+}
+
+.action_go
+{
+	color: #0a0;
+	width: 100px;
+	max-width: 100px;
+	min-width: 100px;
+}
+
+.group
+{
+	background-color: #ddd;
+}

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140708121857) do
+ActiveRecord::Schema.define(version: 20140711081757) do
 
   create_table "flavors", force: true do |t|
     t.string   "name"
@@ -48,6 +48,11 @@ ActiveRecord::Schema.define(version: 20140708121857) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "apps"
+    t.string   "flavor"
+    t.string   "image"
+    t.string   "volume"
+    t.string   "ipaddress"
+    t.string   "status"
   end
 
   create_table "openstack_users", force: true do |t|

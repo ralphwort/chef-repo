@@ -1,6 +1,7 @@
 class Openstackapi
 
 	def initialize(openstack_user)
+		@openstack_user = openstack_user
 		openstack_user = OpenstackUser.find(openstack_user)
 		@username = openstack_user[:os_username]
 		@api_key = openstack_user[:os_password]
@@ -119,9 +120,9 @@ class Openstackapi
  		end
  		IpAddress.delete_all
  		@os.get_floating_ips.each do |floatingip|
- 			if (floatingip.fixed_ip.to_s.empty?)
+# 			if (floatingip.fixed_ip.to_s.empty?)
 	 			IpAddress.create({:ip_address => floatingip.ip})
-	 		end
+#	 		end
  		end
  		Volume.delete_all
 		vs = OpenStack::Connection.create({:username => @username, :api_key=> @api_key, :auth_method=>"password",
@@ -133,9 +134,16 @@ class Openstackapi
 
 	def server_status(name)
 		status = "Gone"
+		Node.all.each do |node|
+			node.status = ""
+			node.save
+		end
 		@os.servers.each do |server|
 	    if (server[:name] == name)
 	      status = @os.server(server[:id]).status + ": " + get_server_ip_address(name) + " - " + @os.server(server[:id]).host
+	      node = Node.find_by name: name
+				node.status = @os.server(server[:id]).status
+				node.save
 	    end
 	  end
 	  status

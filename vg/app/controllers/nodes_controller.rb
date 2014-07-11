@@ -5,10 +5,25 @@ class NodesController < ApplicationController
   # GET /nodes.json
   def index
     if (params[:openstack_user].present?)
+      session[:openstack_user] = params[:openstack_user]
       @openstack = Openstackapi.new(params[:openstack_user])
-      @openstack.populate_flavors
+      if (session[:updated_floavors] == "")
+        session[:updated_floavors] = "populated"
+        @openstack.populate_flavors
+      end
       @nodes = Node.for_openstack_user(params[:openstack_user])
+      @flavors = Array.new
+      @images = Array.new
+      @volumes = Array.new
+      @ipaddresses = Array.new
+      @nodes.each do |node|
+        @flavors.push(node.flavor)
+        @images.push(node.image)
+        @volumes.push(node.volume)
+        @ipaddresses.push(node.ipaddress)
+      end
     else
+      session[:openstack_user] = ""
       @nodes = Node.all
     end
   end
@@ -34,7 +49,7 @@ class NodesController < ApplicationController
 
     respond_to do |format|
       if @node.save
-        format.html { redirect_to nodes_url(:openstack_user => params[:openstack_user]), notice: 'Node was successfully created.' }
+        format.html { redirect_to nodes_url(:openstack_user => session[:openstack_user]), notice: 'Node was successfully created.' }
         format.json { render :show, status: :created, location: @node }
       else
         format.html { render :new }
@@ -48,7 +63,7 @@ class NodesController < ApplicationController
   def update
     respond_to do |format|
       if @node.update(node_params)
-        format.html { redirect_to @node, notice: 'Node was successfully updated.' }
+        format.html { redirect_to nodes_url(:openstack_user => session[:openstack_user]), notice: 'Node was successfully updated.' }
         format.json { render :show, status: :ok, location: @node }
       else
         format.html { render :edit }
@@ -62,7 +77,7 @@ class NodesController < ApplicationController
   def destroy
     @node.destroy
     respond_to do |format|
-      format.html { redirect_to nodes_url(:openstack_user => params[:openstack_user]), notice: 'Node was successfully destroyed.' }
+      format.html { redirect_to nodes_url(:openstack_user => session[:openstack_user]), notice: 'Node was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -77,4 +92,5 @@ class NodesController < ApplicationController
     def node_params
       params.require(:node).permit(:openstack_user_id, :name, :recipe, :apps)
     end
+
 end

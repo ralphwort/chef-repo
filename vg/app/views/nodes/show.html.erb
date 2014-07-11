@@ -16,5 +16,5 @@
 </p>
 
 
-<%= link_to 'Edit', edit_node_path(@node, :openstack_user => params[:openstack_user]) %> |
-<%= link_to 'Back', nodes_path(:openstack_user => params[:openstack_user]) %>
+<%= link_to 'Edit', edit_node_path %> |
+<%= link_to 'Back', nodes_path(:openstack_user => session[:openstack_user]) %>
